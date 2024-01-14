@@ -6,7 +6,7 @@ console.log("err");
 }
 
 const errorHandler = (err, req, res, next) => {
-console.log("err1");
+console.log("err middleware");
 
     const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
     let message = err.message;

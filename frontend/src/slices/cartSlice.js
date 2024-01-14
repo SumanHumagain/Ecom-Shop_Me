@@ -33,6 +33,10 @@ const cartSlice = createSlice({
             state.paymentMethod = action.payload;
             return updateCart(state);
         },
+        clearCartItems(state, action) {
+            state.cartItems = [];
+            return updateCart(state);
+        },
         decreaseCart(state, action) {
             const item = state.cartItems.find((i) => i.id === action.payload.id);
             if (item.quantity > 1) {
@@ -46,5 +50,5 @@ const cartSlice = createSlice({
 }
 });
 
-export const { addToCart, removeFromCart, decreaseCart, saveShippingAddress, savePaymentMethod } = cartSlice.actions;
+export const { addToCart, removeFromCart, decreaseCart, saveShippingAddress, savePaymentMethod, clearCartItems } = cartSlice.actions;
 export default cartSlice.reducer;
