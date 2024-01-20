@@ -7,9 +7,9 @@ import { toast } from 'react-toastify';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
  import {
-   //useDeliverOrderMutation,
+   useDeliverOrderMutation,
    useGetOrderDetailsQuery,
-   useGetPayPalClientIdQuery,
+   useGetPaypalClientIdQuery,
    usePayOrderMutation,
  } from '../slices/ordersApiSlice';
 
@@ -25,8 +25,7 @@ const OrderScreen = () => {
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
 
-//   const [deliverOrder, { isLoading: loadingDeliver }] =
-//     useDeliverOrderMutation();
+   const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
 
   const { userInfo } = useSelector((state) => state.auth);
 
@@ -36,7 +35,7 @@ const OrderScreen = () => {
     data: paypal,
     isLoading: loadingPayPal,
     error: errorPayPal,
-  } = useGetPayPalClientIdQuery();
+  } = useGetPaypalClientIdQuery();
 
   useEffect(() => {
     if (!errorPayPal && !loadingPayPal && paypal.clientId) {
@@ -63,7 +62,7 @@ const OrderScreen = () => {
       try {
         await payOrder({ orderId, details });
         refetch();
-        toast.success('Order is paid');
+        toast.success('Payment successful');
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
@@ -71,36 +70,38 @@ const OrderScreen = () => {
   }
 
 //   TESTING ONLY! REMOVE BEFORE PRODUCTION
-  async function onApproveTest() {
-    debugger;
-    await payOrder({ orderId, details: { payer: {} } });
-    refetch();
+  // async function onApproveTest() {
+  //   debugger;
+  //   await payOrder({ orderId, details: { payer: {} } });
+  //   refetch();
 
-    toast.success('Order is paid');
-  }
+  //   toast.success('Payment successful');
+  // }
 
   function onError(err) {
     toast.error(err.message);
   }
 
   function createOrder(data, actions) {
-    // return actions.order
-    //   .create({
-    //     purchase_units: [
-    //       {
-    //         amount: { value: order.totalPrice },
-    //       },
-    //     ],
-    //   })
-    //   .then((orderID) => {
-    //     return orderID;
-    //   });
+    return actions.order
+      .create({
+        purchase_units: [
+          {
+            amount: { value: order.totalPrice },
+          },
+        ],
+      })
+      .then((orderID) => {
+        return orderID;
+      });
   }
 
-//   const deliverHandler = async () => {
-//     await deliverOrder(orderId);
-//     refetch();
-//   };
+  const deliverHandler = async () => {
+    await deliverOrder(orderId);
+    toast.success('Order is delivered');
+    refetch();
+  };
+
     return isLoading ? (
         <Loader />
       ) : error ? (
@@ -220,12 +221,12 @@ const OrderScreen = () => {
                   ) : (
                     <div>
                       {/* THIS BUTTON IS FOR TESTING! REMOVE BEFORE PRODUCTION! */}
-                       <Button
+                       {/* <Button
                         style={{ marginBottom: '10px' }}
                         onClick={onApproveTest}
                       >
                         Test Pay Order
-                      </Button>
+                      </Button> */}
 
                       <div>
                         <PayPalButtons
@@ -238,6 +239,21 @@ const OrderScreen = () => {
                   )}
                 </ListGroup.Item>
               )}
+
+              { loadingDeliver && <Loader />}
+              { userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                <ListGroup.Item>
+                  <Button
+                    type='button'
+                    className='btn btn-block'
+                    onClick={deliverHandler}
+                  >
+                    Mark As Delivered
+                  </Button>
+                </ListGroup.Item>
+              )}
+
+
                 </ListGroup>
               </Card>
             </Col>
