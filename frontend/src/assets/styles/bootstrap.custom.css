@@ -730,6 +730,7 @@ progress {
 
 .img-fluid {
   max-width: 100%;
+  height: auto;
 }
 
 .img-thumbnail {
@@ -6229,7 +6230,6 @@ fieldset:disabled .btn {
   position: relative;
   width: 100%;
   overflow: hidden;
-  height: 20vw;
 }
 .carousel-inner::after {
   display: block;
@@ -6407,12 +6407,10 @@ fieldset:disabled .btn {
   right: 15%;
   bottom: 1.25rem;
   left: 15%;
-  top:0;
   padding-top: 1.25rem;
   padding-bottom: 1.25rem;
   color: #fff;
   text-align: center;
-  background: none !important;
 }
 
 .carousel-dark .carousel-control-prev-icon,
