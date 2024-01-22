@@ -4,6 +4,8 @@ import { Table, Button } from 'react-bootstrap';
 import { FaTrash, FaEdit, FaCheck, FaTimes } from 'react-icons/fa';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
+import Paginate from '../../components/Paginate';
+import { useParams } from 'react-router-dom';
 import {
   useDeleteUserMutation,
   useGetUsersQuery,
@@ -11,8 +13,11 @@ import {
 import { toast } from 'react-toastify';
 
 const UserListScreen = () => {
-  const { data: users, refetch, isLoading, error } = useGetUsersQuery();
+    const { pageNumber } = useParams();
 
+  const { data, refetch, isLoading, error } = useGetUsersQuery({
+    pageNumber,
+  });
   const [deleteUser] = useDeleteUserMutation();
 
   const deleteHandler = async (id) => {
@@ -37,6 +42,7 @@ const UserListScreen = () => {
           {error?.data?.message || error.error}
         </Message>
       ) : (
+        <>
         <Table striped bordered hover responsive className='table-sm'>
           <thead>
             <tr>
@@ -48,7 +54,7 @@ const UserListScreen = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
+            {data.users.map((user) => (
               <tr key={user._id}>
                 <td>{user._id}</td>
                 <td>{user.name}</td>
@@ -87,6 +93,8 @@ const UserListScreen = () => {
             ))}
           </tbody>
         </Table>
+        <Paginate pages={data.pages} page={data.page} isAdmin={true} pageName={'userlist'} />
+        </>
       )}
     </>
   );

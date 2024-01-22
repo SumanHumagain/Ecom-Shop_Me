@@ -17,41 +17,47 @@ const HomeScreen = () => {
     pageNumber,
   });
 
-  return (
-    <>
-      {!keyword ? (
-        <ProductCarousel />
-      ) : (
-        <Link to='/' className='btn btn-light mb-4'>
-          Go Back
-        </Link>
-      )}
-      {isLoading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant='danger'>
-          {error?.data?.message || error.error}
-        </Message>
-      ) : (
-        <>
-          {/* <Meta /> */}
-          <h1>Latest Products</h1>
-          <Row>
-            {data.products.map((product) => (
-              <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                <Product product={product} />
-              </Col>
-            ))}
-          </Row>
-          <Paginate
-            pages={data.pages}
-            page={data.page}
-            keyword={keyword ? keyword : ''}
-          />
-        </>
-      )}
-    </>
-  );
-};
+    return (
+      <div className="product-list-container">
+        <div className="product-list-header">
+          {!keyword ? (
+            <ProductCarousel />
+          ) : (
+            <Link to="/" className="btn btn-light mb-4">
+              Go Back
+            </Link>
+          )}
+        </div>
+        <div className="product-list-content">
+          {isLoading ? (
+            <Loader />
+          ) : error ? (
+            <Message variant="danger">
+              {error?.data?.message || error.error}
+            </Message>
+          ) : (
+            <div className="product-list-main">
+              {/* <Meta /> */}
+              <h1 className="product-list-title">Latest Products</h1>
+              <Row>
+                {data.products.map((product) => (
+                  <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                    <Product product={product} />
+                  </Col>
+                ))}
+              </Row>
+              <div className="product-list-pagination">
+                <Paginate
+                  pages={data.pages}
+                  page={data.page}
+                  keyword={keyword ? keyword : ''}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
 
 export default HomeScreen;
